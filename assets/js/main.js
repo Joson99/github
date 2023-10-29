@@ -217,16 +217,30 @@ reloadSlider(); // Show the initial slide
 
 
 
+
 /* Adjust the height of the slider dynamically based on the size of the browser */
 
-window.addEventListener('resize', () => {
+function debounce(func, delay) {
+    let timeout;
+    return function () {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+
+// Debounce the resize event to occur only once every 100 milliseconds
+const debouncedResize = debounce(() => {
     const slider = document.querySelector('.slider');
     slider.style.height = `${window.innerHeight}px`;
-  });
-  
-  // Set initial height on page load
-  window.addEventListener('load', () => {
+}, 0);
+
+// Set initial height on page load
+window.addEventListener('load', () => {
     const slider = document.querySelector('.slider');
     slider.style.height = `${window.innerHeight}px`;
-  });
-  
+});
+
+// Event listener for the window resize, using the debounced function
+window.addEventListener('resize', debouncedResize);
